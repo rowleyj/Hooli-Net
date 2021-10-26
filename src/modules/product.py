@@ -4,5 +4,5 @@
 #!/usr/bin/env python3
 
 
-def mutiply(a, b):
+def multiply(a, b):
     return a * b
