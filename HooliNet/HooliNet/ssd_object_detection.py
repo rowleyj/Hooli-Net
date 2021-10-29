@@ -5,7 +5,7 @@ def car_detection(PROTOTXT, MODEL, INP_VIDEO_PATH, OUT_VIDEO_PATH):
     #PROTOTXT = "C:/Users/tnaguib/Documents/GitHub/Hooli-Net/HooliNet/HooliNet/MobileNetSSD_deploy.prototxt"
     #MODEL = "C:/Users/tnaguib/Documents/GitHub/Hooli-Net/HooliNet/HooliNet/MobileNetSSD_deploy.caffemodel"
     #INP_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/HooliNet/HooliNet/cars4.mp4'
-    #OUT_VIDEO_PATH = 'C:/6Users/tnaguib/Documents/GitHub/Hooli-Net/HooliNet/HooliNet/cars_detection.mp4'
+    #OUT_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/HooliNet/HooliNet/cars_detection.mp4'
     CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus",  "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
     COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
