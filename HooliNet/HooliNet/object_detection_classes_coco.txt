@@ -1,8 +1,0 @@
-{0: u'__background__',
- 1: u'person',
- 2: u'bicycle',
- 3: u'car',
- 4: u'motorcycle',
- 5: u'bus',
- 7: u'truck'
-}
