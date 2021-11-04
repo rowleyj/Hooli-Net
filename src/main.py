@@ -8,6 +8,7 @@ from flask_restful import Api, Resource, reqparse, abort
 
 # import modules
 from modules import product
+from modules import ml_wrappers
 
 
 app = Flask(__name__)
@@ -47,6 +48,29 @@ api.add_resource(Product, "/product")
 
 
 # Vehicle Detect
+vehicleDetectArgs = reqparse.RequestParser()
+vehicleDetectArgs.add_argument("input_video_path", type=str, help="Error - Value 'input_video_path' is required!", required=True)
+vehicleDetectArgs.add_argument("output_video_path", type=str, help="Error - Value 'output_video_path' is required!", required=True)
+
+class Vehicle_Detect(Resource):
+    def get(self):
+        #authenticate requester (use request.baseURL)
+
+        args = vehicleDetectArgs.parse_args()
+
+        input_path = args["input_video_path"]
+        output_path = args["output_video_path"]
+        processed = ml_wrappers.vehicle_detect(input_path, output_path)
+
+        response = {
+            "input_video_path":input_path,
+            "output_video_path":output_path,
+            "processed":processed
+        }
+
+        return response, 200
+    
+api.add_resource(Vehicle_Detect, "/vehicle_detect")
 
 
 ##################################
