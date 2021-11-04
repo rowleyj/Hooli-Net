@@ -2,10 +2,10 @@ import cv2
 import imutils
 import numpy as np
 import pytesseract
-print(pytesseract)
+
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\tnaguib\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
-img = cv2.imread("src\modules\models\plate5.jpg",cv2.IMREAD_COLOR)
+img = cv2.imread("src\modules\object_detection\plate5.jpg",cv2.IMREAD_COLOR)
 img = cv2.resize(img,(800,800))
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) 
