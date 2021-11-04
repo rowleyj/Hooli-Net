@@ -47,3 +47,11 @@ cv2.destroyAllWindows()
 def car_detection(PROTOTXT, MODEL, INP_VIDEO_PATH, OUT_VIDEO_PATH):
     #return true if the video was able to be fully processed and the output was stored correctly; return false otherwise
     pass
+
+
+if __name__ == "__main__":
+    PROTOTXT = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/MobileNetSSD_deploy.prototxt'
+    MODEL = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/MobileNetSSD_deploy.caffemodel'
+    INP_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars4.mp4'
+    OUT_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars_detection.avi'
+    car_detection(PROTOTXT, MODEL, INP_VIDEO_PATH, OUT_VIDEO_PATH)
