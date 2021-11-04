@@ -15,7 +15,7 @@ def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
     cap = cv2.VideoCapture(INP_VIDEO_PATH)
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
-    out = cv2.VideoWriter(OUT_VIDEO_PATH, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
+    out = cv2.VideoWriter(OUT_VIDEO_PATH, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'),
                         10, (frame_width, frame_height))
     sys.path.append("..")
     while True:
