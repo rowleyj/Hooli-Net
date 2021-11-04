@@ -5,16 +5,11 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\tnaguib\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
-<<<<<<< Updated upstream:src/modules/models/license_plate_detection.py
-img = cv2.imread("src\modules\models\plate5.jpg",cv2.IMREAD_COLOR)
+img = cv2.imread("src\modules\object_detection\plate5.jpg",cv2.IMREAD_COLOR)
 img = cv2.resize(img,(800,800))
-=======
-img = cv2.imread("src\modules\object_detection\plate8.jpg",cv2.IMREAD_COLOR)
-img = cv2.resize(img,(900,900))
->>>>>>> Stashed changes:src/modules/object_detection/license_plate_detection.py
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) 
-gray = cv2.bilateralFilter(gray, 13, 13, 15) 
+gray = cv2.bilateralFilter(gray, 13, 30, 15) 
 cv2.imshow('car_gray',gray)
 edged = cv2.Canny(gray, 20, 200) 
 cv2.imshow('car_edge',edged)
