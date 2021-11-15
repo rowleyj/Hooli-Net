@@ -5,7 +5,7 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\tnaguib\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
-img = cv2.imread("src\modules\object_detection\plate5.jpg",cv2.IMREAD_COLOR)
+img = cv2.imread("src\modules\models\plates\plate5.jpg",cv2.IMREAD_COLOR)
 img = cv2.resize(img,(800,800))
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) 
@@ -37,7 +37,9 @@ if detected == 1:
 
 mask = np.zeros(gray.shape,np.uint8)
 new_image = cv2.drawContours(mask,[screenCnt],0,255,-1,)
+cv2.imshow('contours',new_image)
 new_image = cv2.bitwise_and(img,img,mask=mask)
+cv2.imshow('bitwise',new_image)
 
 (x, y) = np.where(mask == 255)
 (topx, topy) = (np.min(x), np.min(y))
