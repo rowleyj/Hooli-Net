@@ -12,3 +12,6 @@ BASE = "http://127.0.0.1:5000/"
 
 response = requests.get(BASE + "product", {"a":2,"b":3})
 print(response.json())
+
+response = requests.get(BASE + "process_video", {"input_video_path":'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars4.mp4', "output_video_path":'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars_detection.avi', "jwt":'abc123'})
+print(response.json())

@@ -47,19 +47,21 @@ api.add_resource(Product, "/product")
 ##################################
 
 
-# Vehicle Detect
-vehicleDetectArgs = reqparse.RequestParser()
-vehicleDetectArgs.add_argument("input_video_path", type=str, help="Error - Value 'input_video_path' is required!", required=True)
-vehicleDetectArgs.add_argument("output_video_path", type=str, help="Error - Value 'output_video_path' is required!", required=True)
+# Process Video
+processVideoArgs = reqparse.RequestParser()
+processVideoArgs.add_argument("input_video_path", type=str, help="Error - Value 'input_video_path' is required!", required=True)
+processVideoArgs.add_argument("output_video_path", type=str, help="Error - Value 'output_video_path' is required!", required=True)
+processVideoArgs.add_argument("jwt", type=str, help="Error - Vaule 'jwt' is required!", required=True)
 
-class Vehicle_Detect(Resource):
+class Process_Video(Resource):
     def get(self):
         #authenticate requester (use request.baseURL)
 
-        args = vehicleDetectArgs.parse_args()
+        args = processVideoArgs.parse_args()
 
         input_path = args["input_video_path"]
         output_path = args["output_video_path"]
+        jwt = args["jwt"]
         processed = ml_wrappers.vehicle_detect(input_path, output_path)
 
         response = {
@@ -70,13 +72,7 @@ class Vehicle_Detect(Resource):
 
         return response, 200
     
-api.add_resource(Vehicle_Detect, "/vehicle_detect")
-
-
-##################################
-
-
-# Vehicle Identify
+api.add_resource(Process_Video, "/process_video")
 
 
 ##################################
