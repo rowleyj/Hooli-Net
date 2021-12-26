@@ -51,7 +51,7 @@ api.add_resource(Product, "/product")
 processVideoArgs = reqparse.RequestParser()
 processVideoArgs.add_argument("input_video_path", type=str, help="Error - Value 'input_video_path' is required!", required=True)
 processVideoArgs.add_argument("output_video_path", type=str, help="Error - Value 'output_video_path' is required!", required=True)
-processVideoArgs.add_argument("jwt", type=str, help="Error - Vaule 'jwt' is required!", required=True)
+processVideoArgs.add_argument("token", type=str, help="Error - Vaule 'token' is required!", required=True)
 
 class Process_Video(Resource):
     def get(self):
@@ -61,7 +61,7 @@ class Process_Video(Resource):
 
         input_path = args["input_video_path"]
         output_path = args["output_video_path"]
-        jwt = args["jwt"]
+        token = args["token"]
         processed = ml_wrappers.vehicle_detect(input_path, output_path)
 
         response = {
