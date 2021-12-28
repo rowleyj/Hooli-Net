@@ -1,2 +1,2 @@
 *.code-workspace
-src/modules/local_variables.py
+src/local_variables.py
