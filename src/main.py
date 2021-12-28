@@ -62,7 +62,10 @@ class Process_Video(Resource):
         input_path = args["input_video_path"]
         output_path = args["output_video_path"]
         token = args["token"]
-        processed = ml_wrappers.vehicle_detect(input_path, output_path, token)
+        
+        # start processing video - add all steps later
+        processed = True
+        #processed = ml_wrappers.vehicle_detect(input_path, output_path, token)
 
         response = {
             "input_video_path":input_path,
