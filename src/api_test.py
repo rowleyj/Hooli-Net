@@ -6,6 +6,7 @@
 
 # import libraries
 import requests
+import local_variables
 
 
 BASE = "http://127.0.0.1:5000/"
@@ -19,8 +20,8 @@ print(response.json())
 response = requests.get(
     BASE + "process_video",
     params={
-        "input_video_path":'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars4.mp4',
-        "output_video_path":'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars_detection.avi',
+        "input_video_path":local_variables.video_inp_path,
+        "output_video_path":local_variables.video_out_path,
         "token":'abc123'
     })
 print(response.json())

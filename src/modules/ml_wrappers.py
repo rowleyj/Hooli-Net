@@ -7,11 +7,12 @@
 # import ml models and functions
 from .models.ssd_object_detection import car_detection
 from .models.license_plate_detection import license_reading
+import local_variables
 
 
 def vehicle_detect(input_video_path, output_video_path, auth_token):
-    PROTOTXT = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/MobileNetSSD_deploy.prototxt'
-    MODEL = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/MobileNetSSD_deploy.caffemodel'
+    PROTOTXT = local_variables.prototext_path
+    MODEL = local_variables.model_path
 
     return car_detection(PROTOTXT, MODEL, input_video_path, output_video_path)
 

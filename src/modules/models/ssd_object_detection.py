@@ -1,12 +1,13 @@
 import numpy as np
 import cv2
 import sys
+import local_variables
 
 def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
-    PROTOTXT = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/object_detection/MobileNetSSD_deploy.prototxt'
-    MODEL = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/object_detection/MobileNetSSD_deploy.caffemodel'
-    INP_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/object_detection/cars4.mp4'
-    OUT_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/object_detection/cars_detection.mp4'
+    PROTOTXT = local_variables.prototext_path
+    MODEL = local_variables.model_path
+    INP_VIDEO_PATH = local_variables.video_inp_path
+    OUT_VIDEO_PATH = local_variables.video_out_path
     CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus",  "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
     COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
@@ -52,8 +53,8 @@ def car_detection(PROTOTXT, MODEL, INP_VIDEO_PATH, OUT_VIDEO_PATH):
 
 
 if __name__ == "__main__":
-    PROTOTXT = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/MobileNetSSD_deploy.prototxt'
-    MODEL = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/MobileNetSSD_deploy.caffemodel'
-    INP_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars4.mp4'
-    OUT_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars_detection.avi'
+    PROTOTXT = local_variables.prototext_path
+    MODEL = local_variables.model_path
+    INP_VIDEO_PATH = local_variables.video_inp_path
+    OUT_VIDEO_PATH = local_variables.video_out_path
     car_detection(PROTOTXT, MODEL, INP_VIDEO_PATH, OUT_VIDEO_PATH)
