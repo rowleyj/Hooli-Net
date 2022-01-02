@@ -6,8 +6,6 @@ import local_variables
 def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
     PROTOTXT = local_variables.prototext_path
     MODEL = local_variables.model_path
-    INP_VIDEO_PATH = local_variables.video_inp_path
-    OUT_VIDEO_PATH = local_variables.video_out_path
     CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus",  "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
     COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
@@ -46,15 +44,7 @@ def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
     cv2.destroyAllWindows()
 
 
-# placeholder function
-def car_detection(PROTOTXT, MODEL, INP_VIDEO_PATH, OUT_VIDEO_PATH):
-    #return true if the video was able to be fully processed and the output was stored correctly; return false otherwise
-    pass
-
-
 if __name__ == "__main__":
-    PROTOTXT = local_variables.prototext_path
-    MODEL = local_variables.model_path
     INP_VIDEO_PATH = local_variables.video_inp_path
     OUT_VIDEO_PATH = local_variables.video_out_path
-    car_detection(PROTOTXT, MODEL, INP_VIDEO_PATH, OUT_VIDEO_PATH)
+    car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH)
