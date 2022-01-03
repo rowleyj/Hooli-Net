@@ -11,10 +11,7 @@ import local_variables
 
 
 def vehicle_detect(input_video_path, output_video_path, auth_token):
-    PROTOTXT = local_variables.prototext_path
-    MODEL = local_variables.model_path
-
-    return car_detection(PROTOTXT, MODEL, input_video_path, output_video_path)
+    return car_detection(input_video_path, output_video_path)
 
 
 def license_read():
