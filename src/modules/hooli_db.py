@@ -10,7 +10,7 @@ import local_variables
 
 
 # function to create new vehicle in db
-def dbCreateVehicle(licensePlate, token):
+def dbCreateVehicle(licensePlate: str, token: str) -> bool:
     response = requests.post(
         local_variables.backend_url + '/vehicle',
         data={'licensePlate':licensePlate},
