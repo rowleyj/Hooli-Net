@@ -57,10 +57,12 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, frame, bb, vehicleID, 
             #check if tracker was successful
             if isSuccessful:
                 trackingData["boxes"].append(box)
-                print(box)
                 (x, y, w, h) = [int(v) for v in box]
-                print((x, y, w, h))
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+                if debug:
+                    print(box)
+                    print((x, y, w, h))
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             else:
                 if not debug:
                     break
