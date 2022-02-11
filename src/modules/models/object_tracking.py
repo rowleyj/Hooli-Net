@@ -13,7 +13,7 @@ import time
 #import local_variables
 
 
-def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, frame, bb, vehicleID, debug: bool):
+def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, vehicleID: str, debug: bool):
     if debug:
         tracking_video_inp_path =    'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/cars4.mp4' #local_variables.tracking_video_inp_path
         tracking_video_out_path =    'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/cars_tracking.mp4'
@@ -29,6 +29,8 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, frame, bb, vehicleID, 
 
     trackingData = {
         "id": vehicleID,
+        "startFrame": startFrame,
+        "endFrame": startFrame,
         "boxes": []
     }
 
@@ -65,6 +67,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, frame, bb, vehicleID, 
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             else:
                 if not debug:
+                    trackingData["endFrame"] = videoStream.get(cv2.CAP_PROP_POS_FRAMES) - 1
                     break
             
             if debug:
