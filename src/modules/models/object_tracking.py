@@ -37,6 +37,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
     tracker = cv2.TrackerCSRT_create()
 
     videoStream = cv2.VideoCapture(tracking_video_inp_path)
+    videoStream.set(cv2.CAP_PROP_POS_FRAME, startFrame)
 
     #loop over frames
     while True:
