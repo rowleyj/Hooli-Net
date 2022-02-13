@@ -16,7 +16,8 @@ def selectLicensePlate(frame: str):
     image = cv2.imread(frame)
     
     bb = cv2.selectROI("Frame", image, fromCenter=False, showCrosshair=True)
-
+    '''print(bb)
+    print(type(bb))'''
     return bb
 
 
@@ -26,6 +27,12 @@ def getPixelWidth(frame: str) -> int:
 
     if licensePlateBB != None:
         (x, y, w, h) = [int(v) for v in licensePlateBB]
+        '''print(x)
+        print(y)
+        print(w)
+        print(h)
+        print("w:")
+        print(licensePlateBB[2])'''
         return w
 
     print("Error reading bb!")
@@ -92,5 +99,17 @@ def getInstantSpeed(frame1: str, frame2: str, skippedFrames: int, focalLength: f
 
 if __name__ == "__main__":
     iPhoneFocalLength = calibrateSystem('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/iphone_calibrate_1m.jpeg')
+    print("Focal Length:")
     print(iPhoneFocalLength)
 
+    testPlateDistance1 = getPlateDistance('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/IMG_0408.jpeg', iPhoneFocalLength) #should be 1m
+    print("Test Plate 1 Distance (1.0m expected):")
+    print(testPlateDistance1)
+
+    testPlateDistance2 = getPlateDistance('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/IMG_0409.jpeg', iPhoneFocalLength) #should be 1.5m
+    print("Test Plate 2 Distance (1.5m expected):")
+    print(testPlateDistance2)
+
+    testPlateDistance3 = getPlateDistance('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/IMG_0410.jpeg', iPhoneFocalLength) #should be 2m
+    print("Test Plate 3 Distance (2.0m expected):")
+    print(testPlateDistance3)
