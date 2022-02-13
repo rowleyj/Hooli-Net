@@ -18,16 +18,6 @@ def selectLicensePlate(frame: str):
     bb = cv2.selectROI("Frame", image, fromCenter=False, showCrosshair=True)
 
     return bb
-    '''
-    cv2.imshow("Frame", image)
-    
-    key = cv2.waitKey(0) & 0xFF
-    if key == ord("s"):
-        #select bb of license plate
-        #press ENTER or SPACE after selecting ROI
-        bb = cv2.selectROI("Frame", image, fromCenter=False, showCrosshair=True)
-        print(bb)
-        return bb'''
 
 
 # function to find license plate pixel width
