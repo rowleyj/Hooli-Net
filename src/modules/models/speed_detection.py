@@ -11,9 +11,34 @@ import numpy as np
 
 
 
+# function to select license plate in an image
+def selectLicensePlate(frame: str):
+    image = cv2.imread(frame)
+    
+    bb = cv2.selectROI("Frame", image, fromCenter=False, showCrosshair=True)
+
+    return bb
+    '''
+    cv2.imshow("Frame", image)
+    
+    key = cv2.waitKey(0) & 0xFF
+    if key == ord("s"):
+        #select bb of license plate
+        #press ENTER or SPACE after selecting ROI
+        bb = cv2.selectROI("Frame", image, fromCenter=False, showCrosshair=True)
+        print(bb)
+        return bb'''
+
+
 # function to find license plate pixel width
 def getPixelWidth(frame: str) -> int:
-    pass
+    licensePlateBB = selectLicensePlate(frame)
+
+    if licensePlateBB != None:
+        (x, y, w, h) = [int(v) for v in licensePlateBB]
+        return w
+
+    print("Error reading bb!")
 
 
 # function to get camera's perceived focal length
@@ -76,4 +101,6 @@ def getInstantSpeed(frame1: str, frame2: str, skippedFrames: int, focalLength: f
 
 
 if __name__ == "__main__":
-    pass
+    iPhoneFocalLength = calibrateSystem('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/iphone_calibrate_1m.jpeg')
+    print(iPhoneFocalLength)
+
