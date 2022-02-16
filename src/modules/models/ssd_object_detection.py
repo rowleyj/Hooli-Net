@@ -6,7 +6,7 @@ import pytesseract
 from PIL import Image
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\tnaguib\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 import local_variables
-import object_tracking
+from .object_tracking import trackObject
 
 def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
     PROTOTXT = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/MobileNetSSD_deploy.prototxt'
@@ -166,7 +166,7 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 
                 if CLASSES[idx] == "car":
-                    carTracking[str(carCounter)] = object_tracking.trackObject(video_inp_path, video_out_path, cap.get(cv2.CAP_PROP_POS_FRAMES), box, carCounter, False)
+                    carTracking[str(carCounter)] = trackObject(video_inp_path, video_out_path, cap.get(cv2.CAP_PROP_POS_FRAMES), box, carCounter, False)
                     
                     # mask car
                     
