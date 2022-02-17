@@ -60,5 +60,16 @@ cv2.destroyAllWindows()
 
 
 # placeholder function; need to add function arguments
-def license_reading():
-    pass
+def license_reading(video_inp_path: str, frame: int):
+    bb = selectCar(frame)
+
+    #plate dectection
+
+
+
+def selectCar(frame:str):
+    image = cv2.imread(frame)
+    
+    bb = cv2.selectROI("Frame", image, fromCenter=False, showCrosshair=True)
+    
+    return bb
