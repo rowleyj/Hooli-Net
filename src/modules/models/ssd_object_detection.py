@@ -108,8 +108,8 @@ def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
     out.release()
     cv2.destroyAllWindows()
 
-car_detection(INP_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/platetrim.mp4',
-    OUT_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/plate_detection.mp4')
+#car_detection(INP_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/platetrim.mp4',
+#    OUT_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/plate_detection.mp4')
 
 
 # function that incorporates object detection with tracking

@@ -82,7 +82,7 @@ api.add_resource(Process_Video, "/process_video")
 
 
 def main():
-    app.run(debug=True)
+    app.run()
 
 
 if __name__ == "__main__":
