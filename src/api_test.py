@@ -7,6 +7,7 @@
 # import libraries
 import requests
 import local_variables
+import os
 
 
 BASE = "http://127.0.0.1:5000/"
@@ -25,3 +26,7 @@ response = requests.get(
         "token":'abc123'
     })
 print(response.json())
+
+#print(os.getcwd())
+#print(os.path.abspath(os.getcwd()))
+#print(os.path.join(os.getcwd(), 'src', 'modules', 'models', 'cars4.mp4'))
