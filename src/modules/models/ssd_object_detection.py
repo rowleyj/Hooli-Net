@@ -115,10 +115,10 @@ car_detection(INP_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/
 # function that incorporates object detection with tracking
 def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
     if debug:
-        video_inp_path = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/cars4.mp4'
-        video_out_path = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/cars_detection.mp4'
-        PROTOTXT = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/MobileNetSSD_deploy.prototxt'
-        MODEL = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/MobileNetSSD_deploy.caffemodel'
+        video_inp_path = local_variables.video_inp_path
+        video_out_path = local_variables.video_out_path
+        PROTOTXT = local_variables.prototext_path
+        MODEL = local_variables.model_path
     
     else:
         video_inp_path = INP_VIDEO_PATH
@@ -195,6 +195,6 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
 
 
 if __name__ == "__main__":
-    INP_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars4.mp4'
-    OUT_VIDEO_PATH = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/cars_detection.avi'
+    INP_VIDEO_PATH = local_variables.video_inp_path
+    OUT_VIDEO_PATH = local_variables.video_out_path
     carDetectTrack(INP_VIDEO_PATH, OUT_VIDEO_PATH, True)
