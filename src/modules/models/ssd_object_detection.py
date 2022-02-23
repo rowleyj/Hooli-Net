@@ -58,43 +58,6 @@ def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
                     cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
                     screenCnt = None
 
-
-                    for c in cnts:
-                        for eps in np.linspace(0.001, 0.05, 15):
-                            # approximate the contour
-                            peri = cv2.arcLength(c, True)
-                            approx = cv2.approxPolyDP(c, eps * peri, True)
-                            # draw the approximated contour on the image
-                            output = frame.copy()
-                            if screenCnt is None:
-                                detected = 0
-                                break
-                            else:
-                                detected = 1
-
-                            if detected == 1:
-                                cv2.drawContours(frame, [screenCnt], -1, (0, 255, 0), 3)
-                            #cv2.imshow("Approximated Contour", output)
-                            if len(approx) == 5:
-                                screenCnt = approx
-                            # Masking the part other than the number plate
-                            mask = np.zeros(gray.shape,np.uint8)
-                            new_image = cv2.drawContours(mask,[screenCnt],0,255,-1,)
-                            new_image = cv2.bitwise_and(output,frame,mask=mask)
-
-                            # Now crop
-                            (x, y) = np.where(mask == 255)
-                            (topx, topy) = (np.min(x), np.min(y))
-                            (bottomx, bottomy) = (np.max(x), np.max(y))
-                            Cropped = gray[topx:bottomx+1, topy:bottomy+1]
-
-                            #Read the number plate
-                            text = pytesseract.image_to_string(Cropped, config='--psm 11')
-                            print("Detected Number is:",text)
-                            if len(text)>3:
-                                cv2.imshow('image',output)
-                                cv2.imshow('Cropped',Cropped)
-                                idx = int(detections[0, 0, i, 1])
                 else:                
                     box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                     (startX, startY, endX, endY) = box.astype("int")
