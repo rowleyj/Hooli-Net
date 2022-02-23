@@ -11,4 +11,4 @@ Werkzeug==1.0.1
 opencv-contrib-python==4.4.0.46
 opencv-python >= 3.4
 imutils >= 0.5.4
-pytesseract >= 8.4.0
+pytesseract #>= 8.4.0
