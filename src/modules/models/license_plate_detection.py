@@ -73,3 +73,4 @@ def selectCar(frame:str):
     bb = cv2.selectROI("Frame", image, fromCenter=False, showCrosshair=True)
     
     return bb
+"""
