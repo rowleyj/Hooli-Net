@@ -1,4 +1,3 @@
-"""
 import cv2
 import imutils
 import numpy as np
@@ -73,4 +72,3 @@ def selectCar(frame:str):
     bb = cv2.selectROI("Frame", image, fromCenter=False, showCrosshair=True)
     
     return bb
-"""
