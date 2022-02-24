@@ -1,3 +1,4 @@
+"""
 import cv2
 import imutils
 import numpy as np
@@ -5,7 +6,7 @@ import pytesseract
 import local_variables
 
 pytesseract.pytesseract.tesseract_cmd = local_variables.tesseract_path
-"""
+
 img = cv2.imread("src\modules\models\plates\platevid2.png",cv2.IMREAD_COLOR)
 img = cv2.resize(img,(1200,800))
 
@@ -70,8 +71,9 @@ def license_reading(video_inp_path: str, frame: str):
     bb = selectCar(frame)
     #y,x,h,w = bb
     (x, y, w, h) = [int(v) for v in bb]
+    print(x,y,w,h)
     img = cv2.imread(frame,cv2.IMREAD_COLOR)
-    img = img[x:y,w:h]
+    img = img[y:(y+h),x:(x+w)]
     cv2.imshow('croppeded',img)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #convert to grey scale
     #gray = cv2.bilateralFilter(gray, 100, 77, 77) #Blur to reduce noise
