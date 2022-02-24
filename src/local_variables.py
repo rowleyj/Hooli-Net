@@ -20,4 +20,6 @@ model_path =        os.path.join(PATH, 'src', 'modules', 'models', 'MobileNetSSD
 tracking_video_inp_path =    os.path.join(PATH, 'src', 'modules', 'models', 'cars4.mp4')
 tracking_video_out_path =    os.path.join(PATH, 'src', 'modules', 'models', 'cars_tracking.mp4')
 
+plate_image_path = os.path.join(PATH, 'src', 'modules', 'models', 'plates', 'platevid2.png')
+
 backend_url =       'http://127.0.0.1:8080'
