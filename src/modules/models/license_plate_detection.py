@@ -68,7 +68,8 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Users\tnaguib\AppData\Local\Program
 # placeholder function; need to add function arguments
 def license_reading(video_inp_path: str, frame: str):
     bb = selectCar(frame)
-    y,x,h,w = bb
+    #y,x,h,w = bb
+    (x, y, w, h) = [int(v) for v in bb]
     img = cv2.imread(frame,cv2.IMREAD_COLOR)
     img = img[x:y,w:h]
     cv2.imshow('croppeded',img)
@@ -80,6 +81,7 @@ def license_reading(video_inp_path: str, frame: str):
     # find contours in the edged image, keep only the largest
     # ones, and initialize our screen contour
     cnts = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
     cnts = imutils.grab_contours(cnts)
     cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
     screenCnt = None
@@ -126,4 +128,5 @@ def selectCar(frame:str):
     
     return bb
 
-license_reading("C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/platetrim.mp4","C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/plates/platevid2.png")
+if __name__ == "__main__":
+    license_reading("C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/platetrim.mp4","C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/plates/platevid2.png")
