@@ -10,7 +10,7 @@ import local_variables
 import os
 
 
-BASE = "http://127.0.0.1:8000/"
+BASE = "http://127.0.0.1:5000/"
 
 response = requests.get(
     BASE + "product",
