@@ -107,6 +107,7 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
     sys.path.append("..")
     
     carTracking = {}
+    activeCars = []
 
     while True:
         ret, frame = cap.read()
@@ -116,6 +117,9 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
         
         if debug and (cv2.waitKey(1) & 0xFF == ord('q')):
             break
+
+        # mask detected cars
+        frame = maskDetectedObjects(frame, carTracking, activeCars)
         
         h, w = frame.shape[:2]
         blob = cv2.dnn.blobFromImage(frame, 0.0035, (260, 260), 46)
@@ -129,9 +133,9 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 
                 if CLASSES[idx] == "car":
-                    carTracking[str(carCounter)] = trackObject(video_inp_path, video_out_path, cap.get(cv2.CAP_PROP_POS_FRAMES), box, carCounter, False)
-                    
-                    # mask car
+                    carTracking[carCounter] = trackObject(video_inp_path, video_out_path, cap.get(cv2.CAP_PROP_POS_FRAMES), box, carCounter, False)
+
+                    activeCars.append(carCounter)
                     
                     carCounter += 1
 
@@ -148,6 +152,8 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
         
         frameCounter += 1
 
+        #clear expired cars
+
     if debug:
         out.release()
     
@@ -155,6 +161,20 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
     cv2.destroyAllWindows()
 
     return True
+
+
+# function to remove expired objects from the active objects array
+def clearExpiredObjects(carTracking, activeObjects, nextFrameNumber: int):
+    pass
+
+
+# function to mask detected cars in frame
+def maskDetectedObjects(frame, carTracking, activeCars):
+    pass
+
+
+def writeCarsToDB(carTracking):
+    pass
 
 
 if __name__ == "__main__":

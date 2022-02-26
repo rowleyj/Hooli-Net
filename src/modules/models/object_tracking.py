@@ -31,7 +31,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
         "id": vehicleID,
         "startFrame": startFrame,
         "endFrame": startFrame,
-        "boxes": []
+        "boxes": {}
     }
 
     tracker = cv2.TrackerCSRT_create()
@@ -43,6 +43,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
     while True:
         #get frame
         ret, frame = videoStream.read()
+        currentFrameNumber = videoStream.get(cv2.CAP_PROP_POS_FRAMES) - 1
 
         #end of video
         if frame is None:
@@ -59,7 +60,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
 
             #check if tracker was successful
             if isSuccessful:
-                trackingData["boxes"].append(box)
+                trackingData["boxes"][currentFrameNumber] = box
                 (x, y, w, h) = [int(v) for v in box]
 
                 if debug:
@@ -68,7 +69,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             else:
                 if not debug:
-                    trackingData["endFrame"] = videoStream.get(cv2.CAP_PROP_POS_FRAMES) - 1
+                    trackingData["endFrame"] = currentFrameNumber
                     break
             
             if debug:
