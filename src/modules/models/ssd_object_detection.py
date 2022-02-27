@@ -150,13 +150,15 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
                         y = startY - 15 if startY - 15 > 15 else startY + 15
                         cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
         
-        frameCounter += 1
-
         #clear expired cars
+        activeCars = clearExpiredObjects(carTracking, activeCars, cap.get(cv2.CAP_PROP_POS_FRAMES))
+
+        frameCounter += 1
 
     if debug:
         out.release()
     
+    writeCarsToDB(carTracking)
     cap.release()
     cv2.destroyAllWindows()
 
@@ -165,7 +167,14 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
 
 # function to remove expired objects from the active objects array
 def clearExpiredObjects(carTracking, activeObjects, nextFrameNumber: int):
-    pass
+    for objectId in activeObjects:
+        currentObject = carTracking[objectId]
+        currentObjectEndFrame = currentObject['endFrame']
+        
+        if nextFrameNumber < currentObjectEndFrame:
+            activeObjects.remove(objectId)
+
+    return activeObjects
 
 
 # function to mask detected cars in frame
