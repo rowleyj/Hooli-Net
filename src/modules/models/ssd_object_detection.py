@@ -119,10 +119,10 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
             break
 
         # mask detected cars
-        frame = maskDetectedObjects(frame, carTracking, activeCars)
+        maskedFrame = maskDetectedObjects(frame, cap.get(cv2.CAP_PROP_POS_FRAMES) - 1, carTracking, activeCars)
         
         h, w = frame.shape[:2]
-        blob = cv2.dnn.blobFromImage(frame, 0.0035, (260, 260), 46)
+        blob = cv2.dnn.blobFromImage(maskedFrame, 0.0035, (260, 260), 46)
         net.setInput(blob)
         detections = net.forward()
 
@@ -178,8 +178,19 @@ def clearExpiredObjects(carTracking, activeObjects, nextFrameNumber: int):
 
 
 # function to mask detected cars in frame
-def maskDetectedObjects(frame, carTracking, activeCars):
-    pass
+def maskDetectedObjects(frame, frameNumber: int, carTracking, activeCars):
+    mask = np.zeros(frame.shape[:2], dtype="uint8")
+    mask = np.multiply(mask, 255)
+    
+    for carId in activeCars:
+        currentBox = carTracking[carId]["boxes"][frameNumber]
+        (x, y, w, h) = [int(v) for v in currentBox]
+
+        cv2.rectangle(mask, (x, y), (x+w, y+h), 0, -1)
+    
+    maskedFrame = cv2.bitwise_and(frame, frame, mask=mask)
+
+    return maskedFrame
 
 
 def writeCarsToDB(carTracking):
