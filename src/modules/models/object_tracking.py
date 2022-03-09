@@ -10,13 +10,13 @@ import cv2
 import imutils
 import numpy as np
 import time
-import local_variables
+#import local_variables
 
 
 def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, vehicleID: str, debug: bool):
     if debug:
-        tracking_video_inp_path =    local_variables.tracking_video_inp_path #'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/cars4.mp4'
-        tracking_video_out_path =    local_variables.tracking_video_out_path #'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/cars_tracking.mp4'
+        tracking_video_inp_path =    'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/testvid6.mp4' #local_variables.tracking_video_inp_path #'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/cars4.mp4'
+        tracking_video_out_path =    'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/cars_detect_track.mp4' #local_variables.tracking_video_out_path #'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/cars_tracking.mp4'
 
         initBB = None       #init bounding box coordinates
         fps = None          #init fps throughput estimator
@@ -37,16 +37,23 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
     tracker = cv2.TrackerCSRT_create()
 
     videoStream = cv2.VideoCapture(tracking_video_inp_path)
-    videoStream.set(cv2.CAP_PROP_POS_FRAME, startFrame)
+    videoStream.set(1, startFrame)
+
+    #init tracking on start frame if not debug
+    if not debug:
+        ret, frame = videoStream.read()
+
+        tracker.init(frame, initBB)
 
     #loop over frames
     while True:
         #get frame
         ret, frame = videoStream.read()
-        currentFrameNumber = videoStream.get(cv2.CAP_PROP_POS_FRAMES) - 1
+        currentFrameNumber = int(videoStream.get(1)) - 1
 
         #end of video
         if frame is None:
+            trackingData["endFrame"] = currentFrameNumber
             break
 
         #resize frame
@@ -55,22 +62,23 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
 
         #check if initBB is being used (if an object is being tracked)
         if initBB is not None:
+            if currentFrameNumber - trackingData["startFrame"] > 90:
+                trackingData["endFrame"] = currentFrameNumber
+                break
+
             #get new bb corrdinates
             (isSuccessful, box) = tracker.update(frame)
 
             #check if tracker was successful
             if isSuccessful:
-                trackingData["boxes"][currentFrameNumber] = box
-                (x, y, w, h) = [int(v) for v in box]
+                (x, y, w, h) = [round(v) for v in box]
+                trackingData["boxes"][currentFrameNumber] = (x, y, w, h)
 
                 if debug:
-                    print(box)
-                    print((x, y, w, h))
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             else:
-                if not debug:
-                    trackingData["endFrame"] = currentFrameNumber
-                    break
+                trackingData["endFrame"] = currentFrameNumber
+                break
             
             if debug:
                 #update fps counter
@@ -97,6 +105,9 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
                 #select bb of object to be tracked
                 #press ENTER or SPACE after selecting ROI
                 initBB = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+
+                #set start frame
+                trackingData["startFrame"] = currentFrameNumber
             
                 #start OpenCV tracker using supplied bb
                 tracker.init(frame, initBB)
@@ -110,8 +121,10 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
     videoStream.release()
     cv2.destroyAllWindows()
 
+    #print(trackingData)
+
     return trackingData
 
 
 if __name__ == "__main__":
-    trackObject(INP_VIDEO_PATH = None, OUT_VIDEO_PATH = None, frame = None, bb = None, debug = True)
+    trackObject(INP_VIDEO_PATH = None, OUT_VIDEO_PATH = None, startFrame = 0, bb = None, vehicleID = 111, debug = True)

@@ -5,8 +5,9 @@ import imutils
 import pytesseract
 from PIL import Image
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\tnaguib\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-import local_variables
-from .object_tracking import trackObject
+#import local_variables
+#from .object_tracking import trackObject
+from object_tracking import trackObject
 
 def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
     PROTOTXT = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/MobileNetSSD_deploy.prototxt'
@@ -78,10 +79,14 @@ def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
 # function that incorporates object detection with tracking
 def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
     if debug:
-        video_inp_path = local_variables.video_inp_path
-        video_out_path = local_variables.video_out_path
-        PROTOTXT = local_variables.prototext_path
-        MODEL = local_variables.model_path
+        #video_inp_path = local_variables.detect_track_video_inp_path
+        #video_out_path = local_variables.detect_track_video_out_path
+        #PROTOTXT = local_variables.prototext_path
+        #MODEL = local_variables.model_path
+        video_inp_path = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/car_speed_25_take2.mp4'
+        video_out_path = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/cars_detect_track.mp4'
+        PROTOTXT = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/MobileNetSSD_deploy.prototxt'
+        MODEL = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/MobileNetSSD_deploy.caffemodel'
     
     else:
         video_inp_path = INP_VIDEO_PATH
@@ -101,8 +106,9 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
     carCounter = 0
     
     if debug:
-        out = cv2.VideoWriter(video_out_path, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'),
-                            10, (frame_width, frame_height))
+        #out = cv2.VideoWriter(video_out_path, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'),
+        #                    10, (frame_width, frame_height))
+        pass
     
     sys.path.append("..")
     
@@ -118,8 +124,11 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
         if debug and (cv2.waitKey(1) & 0xFF == ord('q')):
             break
 
+        '''if debug:
+            cv2.imshow('original frame', frame)'''
+
         # mask detected cars
-        maskedFrame = maskDetectedObjects(frame, cap.get(cv2.CAP_PROP_POS_FRAMES) - 1, carTracking, activeCars)
+        maskedFrame = maskDetectedObjects(frame, int(cap.get(1)) - 1, carTracking, activeCars)
         
         h, w = frame.shape[:2]
         blob = cv2.dnn.blobFromImage(maskedFrame, 0.0035, (260, 260), 46)
@@ -131,34 +140,46 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
             if confidence > 0.43:
                 idx = int(detections[0, 0, i, 1])
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                (startX, startY, endX, endY) = box.astype("int")
+                bb = (startX, startY, endX-startX, endY-startY)
                 
                 if CLASSES[idx] == "car":
-                    carTracking[carCounter] = trackObject(video_inp_path, video_out_path, cap.get(cv2.CAP_PROP_POS_FRAMES), box, carCounter, False)
+                    carTracking[carCounter] = trackObject(video_inp_path, video_out_path, int(cap.get(1)), bb, carCounter, False)
+                    #print(carTracking[carCounter])
 
                     activeCars.append(carCounter)
+                    #print(activeCars)
                     
                     carCounter += 1
 
                     if debug:
-                        print("Box:")
-                        print(box)
-                        (startX, startY, endX, endY) = box.astype("int")
                         label = "{}: {:.2f}%".format(CLASSES[idx],confidence*100)
-                        cv2.rectangle(frame, (startX, startY), (endX, endY),    COLORS[idx], 2)
-                        out.write(frame)
-                        cv2.imshow('frame', frame)
                         y = startY - 15 if startY - 15 > 15 else startY + 15
+
+                        #show frame
+                        cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[idx], 2)
                         cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+                        #out.write(frame)
+                        cv2.imshow('frame', frame)
+
+                        #show masked frame
+                        cv2.rectangle(maskedFrame, (startX, startY), (endX, endY), COLORS[idx], 2)
+                        cv2.putText(maskedFrame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+                        cv2.imshow('masked frame', maskedFrame)
         
-        #clear expired cars
-        activeCars = clearExpiredObjects(carTracking, activeCars, cap.get(cv2.CAP_PROP_POS_FRAMES))
+        #clear expired carsq
+        activeCars = clearExpiredObjects(carTracking, activeCars, int(cap.get(1)))
 
         frameCounter += 1
 
+        '''if debug:
+            cv2.waitKey(50)'''
+
     if debug:
-        out.release()
+        #out.release()
+        pass
     
-    writeCarsToDB(carTracking)
+    writeCarsToDB(video_inp_path, carTracking)
     cap.release()
     cv2.destroyAllWindows()
 
@@ -167,11 +188,15 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
 
 # function to remove expired objects from the active objects array
 def clearExpiredObjects(carTracking, activeObjects, nextFrameNumber: int):
+    print(activeObjects)
+    print(nextFrameNumber)
+    
     for objectId in activeObjects:
         currentObject = carTracking[objectId]
         currentObjectEndFrame = currentObject['endFrame']
+        print(currentObjectEndFrame)
         
-        if nextFrameNumber < currentObjectEndFrame:
+        if nextFrameNumber > currentObjectEndFrame:
             activeObjects.remove(objectId)
 
     return activeObjects
@@ -179,25 +204,31 @@ def clearExpiredObjects(carTracking, activeObjects, nextFrameNumber: int):
 
 # function to mask detected cars in frame
 def maskDetectedObjects(frame, frameNumber: int, carTracking, activeCars):
-    mask = np.zeros(frame.shape[:2], dtype="uint8")
+    mask = np.ones(frame.shape[:2], dtype="uint8")
     mask = np.multiply(mask, 255)
+
+    print(carTracking)
     
     for carId in activeCars:
         currentBox = carTracking[carId]["boxes"][frameNumber]
         (x, y, w, h) = [int(v) for v in currentBox]
 
         cv2.rectangle(mask, (x, y), (x+w, y+h), 0, -1)
-    
+
     maskedFrame = cv2.bitwise_and(frame, frame, mask=mask)
+
+    '''cv2.imshow("mask", mask)
+    cv2.imshow("masked frame", maskedFrame)
+    key = cv2.waitKey(0)'''
 
     return maskedFrame
 
 
-def writeCarsToDB(carTracking):
+def writeCarsToDB(inputVideo: str, carTracking):
     pass
 
 
 if __name__ == "__main__":
-    INP_VIDEO_PATH = local_variables.video_inp_path
-    OUT_VIDEO_PATH = local_variables.video_out_path
-    carDetectTrack(INP_VIDEO_PATH, OUT_VIDEO_PATH, True)
+    #INP_VIDEO_PATH = local_variables.video_inp_path
+    #OUT_VIDEO_PATH = local_variables.video_out_path
+    carDetectTrack("", "", True)
