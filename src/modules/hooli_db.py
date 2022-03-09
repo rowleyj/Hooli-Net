@@ -18,3 +18,13 @@ def dbCreateVehicle(licensePlate: str, token: str) -> bool:
             'Authorization': f'Bearer {token}'
         })
     return True
+
+
+# function to create new bounding cube in db
+def dbCreateBoundingCube():
+    pass
+
+
+# function to get bounding cube from db
+def dbGetBoundingCube():
+    pass
