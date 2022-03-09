@@ -37,12 +37,11 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
     tracker = cv2.TrackerCSRT_create()
 
     videoStream = cv2.VideoCapture(tracking_video_inp_path)
-    videoStream.set(1, startFrame)
 
-    #init tracking on start frame if not debug
+    #set frame and init tracking on start frame if not debug
     if not debug:
+        videoStream.set(1, startFrame - 1)
         ret, frame = videoStream.read()
-
         tracker.init(frame, initBB)
 
     #loop over frames
@@ -53,7 +52,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
 
         #end of video
         if frame is None:
-            trackingData["endFrame"] = currentFrameNumber
+            trackingData["endFrame"] = currentFrameNumber - 1 #might have to decrease by 1 since last frame was before current
             break
 
         #resize frame
@@ -62,9 +61,10 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
 
         #check if initBB is being used (if an object is being tracked)
         if initBB is not None:
-            if currentFrameNumber - trackingData["startFrame"] > 90:
+            '''if currentFrameNumber - trackingData["startFrame"] > 90:
+                print("expired frame")
                 trackingData["endFrame"] = currentFrameNumber
-                break
+                break'''
 
             #get new bb corrdinates
             (isSuccessful, box) = tracker.update(frame)
@@ -77,7 +77,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
                 if debug:
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             else:
-                trackingData["endFrame"] = currentFrameNumber
+                trackingData["endFrame"] = currentFrameNumber - 1
                 break
             
             if debug:

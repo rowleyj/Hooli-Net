@@ -121,8 +121,8 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
         if not ret:
             break
         
-        if debug and (cv2.waitKey(1) & 0xFF == ord('q')):
-            break
+        '''if debug and (cv2.waitKey(1) & 0xFF == ord('q')):
+            break'''
 
         '''if debug:
             cv2.imshow('original frame', frame)'''
@@ -142,13 +142,13 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 (startX, startY, endX, endY) = box.astype("int")
                 bb = (startX, startY, endX-startX, endY-startY)
-                
+
                 if CLASSES[idx] == "car":
                     carTracking[carCounter] = trackObject(video_inp_path, video_out_path, int(cap.get(1)), bb, carCounter, False)
                     #print(carTracking[carCounter])
 
                     activeCars.append(carCounter)
-                    #print(activeCars)
+                    print(activeCars)
                     
                     carCounter += 1
 
@@ -163,17 +163,18 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
                         cv2.imshow('frame', frame)
 
                         #show masked frame
-                        cv2.rectangle(maskedFrame, (startX, startY), (endX, endY), COLORS[idx], 2)
+                        '''cv2.rectangle(maskedFrame, (startX, startY), (endX, endY), COLORS[idx], 2)
                         cv2.putText(maskedFrame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
-                        cv2.imshow('masked frame', maskedFrame)
+                        cv2.imshow('masked frame', maskedFrame)'''
         
-        #clear expired carsq
+        #clear expired cars
         activeCars = clearExpiredObjects(carTracking, activeCars, int(cap.get(1)))
 
         frameCounter += 1
 
-        '''if debug:
-            cv2.waitKey(50)'''
+        if debug:
+            print("about to wait for key:")
+            cv2.waitKey(0)
 
     if debug:
         #out.release()
@@ -188,13 +189,9 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
 
 # function to remove expired objects from the active objects array
 def clearExpiredObjects(carTracking, activeObjects, nextFrameNumber: int):
-    print(activeObjects)
-    print(nextFrameNumber)
-    
     for objectId in activeObjects:
         currentObject = carTracking[objectId]
         currentObjectEndFrame = currentObject['endFrame']
-        print(currentObjectEndFrame)
         
         if nextFrameNumber > currentObjectEndFrame:
             activeObjects.remove(objectId)
@@ -207,11 +204,12 @@ def maskDetectedObjects(frame, frameNumber: int, carTracking, activeCars):
     mask = np.ones(frame.shape[:2], dtype="uint8")
     mask = np.multiply(mask, 255)
 
-    print(carTracking)
+    #print(carTracking)
     
     for carId in activeCars:
-        currentBox = carTracking[carId]["boxes"][frameNumber]
-        (x, y, w, h) = [int(v) for v in currentBox]
+        '''currentBox = carTracking[carId]["boxes"][frameNumber]
+        (x, y, w, h) = [int(v) for v in currentBox]'''
+        (x, y, w, h) = carTracking[carId]["boxes"][frameNumber]
 
         cv2.rectangle(mask, (x, y), (x+w, y+h), 0, -1)
 
@@ -220,6 +218,7 @@ def maskDetectedObjects(frame, frameNumber: int, carTracking, activeCars):
     '''cv2.imshow("mask", mask)
     cv2.imshow("masked frame", maskedFrame)
     key = cv2.waitKey(0)'''
+    cv2.imshow("masked frame", maskedFrame)
 
     return maskedFrame
 
