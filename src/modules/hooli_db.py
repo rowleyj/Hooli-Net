@@ -13,7 +13,7 @@ import local_variables
 def dbCreateVehicle(licensePlate: str, token: str) -> bool:
     response = requests.post(
         local_variables.backend_url + '/vehicle',
-        data={'licensePlate':licensePlate},
+        data={'licensePlate': licensePlate},
         headers={
             'Authorization': f'Bearer {token}'
         })
@@ -26,7 +26,7 @@ def dbCreateVehicle(licensePlate: str, token: str) -> bool:
 # function to create new bounding cube in db
 def dbCreateBoundingCube(carId: int, videoPath: str, startFrame: int, endFrame: int, boxes, token: str) -> bool:
     response = requests.post(
-        local_variables.backend_url + '/vehicle',
+        local_variables.backend_url + '/boundingCube',
         data={
             'vehicleId': carId,
             'videoUrl': videoPath,
@@ -38,9 +38,16 @@ def dbCreateBoundingCube(carId: int, videoPath: str, startFrame: int, endFrame: 
             'Authorization': f'Bearer {token}'
         })
     
-    pass
+    print(response)
+
+    return True
 
 
 # function to get bounding cube from db
-def dbGetBoundingCube():
-    pass
+def dbGetBoundingCube(carId: int, token: str):
+    response = requests.post(
+        local_variables.backend_url + '/boundingCube',
+        data={'vehicleId': carId},
+        headers={
+            'Authorization': f'Bearer {token}'
+        })
