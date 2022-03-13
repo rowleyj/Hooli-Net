@@ -17,11 +17,27 @@ def dbCreateVehicle(licensePlate: str, token: str) -> bool:
         headers={
             'Authorization': f'Bearer {token}'
         })
+
+    print(response)
+
     return True
 
 
 # function to create new bounding cube in db
-def dbCreateBoundingCube():
+def dbCreateBoundingCube(carId: int, videoPath: str, startFrame: int, endFrame: int, boxes, token: str) -> bool:
+    response = requests.post(
+        local_variables.backend_url + '/vehicle',
+        data={
+            'vehicleId': carId,
+            'videoUrl': videoPath,
+            'start': startFrame,
+            'end': endFrame,
+            'boxes': boxes
+        },
+        headers={
+            'Authorization': f'Bearer {token}'
+        })
+    
     pass
 
 
