@@ -64,8 +64,10 @@ import imutils
 import numpy as np
 import pytesseract
 from PIL import Image
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\tnaguib\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-
+import requests
+from pprint import pprint
+import json
+"""
 # placeholder function; need to add function arguments
 def license_reading(video_inp_path: str, frame: str):
     bb = selectCar(frame)
@@ -100,7 +102,7 @@ def license_reading(video_inp_path: str, frame: str):
             if len(approx) == 5:
                 screenCnt = approx
             cv2.waitKey(0)                
-            """
+            
             # Masking the part other than the number plate
             mask = np.zeros(gray.shape,np.uint8)
             new_image = cv2.drawContours(mask,[screenCnt],0,255,-1,)
@@ -120,10 +122,20 @@ def license_reading(video_inp_path: str, frame: str):
                 cv2.imshow('Cropped',Cropped)
 
                 cv2.waitKey(0)
-            """
+            
     return
-
+"""
 #plate dectection
+def license_reading(video_inp_path: str, frame: str):
+    regions = ['us-ca']
+    with open(frame, 'rb') as fp:
+        response = requests.post(
+            'https://api.platerecognizer.com/v1/plate-reader/',
+            data=dict(regions=regions),  # Optional
+            files=dict(upload=fp),
+            headers={'Authorization': 'Token ed18fff6c5778029f96d44347dbee2b1a2499d09'})
+    pprint(response.json())
+    return response.json()
 
 def selectCar(frame:str):
     image = cv2.imread(frame)
