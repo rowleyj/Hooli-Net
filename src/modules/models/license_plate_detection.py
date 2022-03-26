@@ -71,12 +71,11 @@ def license_reading(video_inp_path: str, frame: str):
     bb = selectCar(frame)
     #y,x,h,w = bb
     (x, y, w, h) = [int(v) for v in bb]
-    print(x,y,w,h)
     img = cv2.imread(frame,cv2.IMREAD_COLOR)
     img = img[y:(y+h),x:(x+w)]
     cv2.imshow('croppeded',img)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #convert to grey scale
-    #gray = cv2.bilateralFilter(gray, 100, 77, 77) #Blur to reduce noise
+    gray = cv2.bilateralFilter(gray, 100, 77, 77) #Blur to reduce noise
     cv2.imshow('gray',gray)
     edged = cv2.Canny(gray, 30, 250) #Perform Edge detection
     cv2.imshow('edged',edged)
@@ -97,9 +96,11 @@ def license_reading(video_inp_path: str, frame: str):
             # draw the approximated contour on the image
             output = img.copy()
             cv2.drawContours(output, [approx], -1, (0, 255, 0), 3)
-            #cv2.imshow("Approximated Contour", output)
+            cv2.imshow("Approximated Contour", output)
             if len(approx) == 5:
                 screenCnt = approx
+            cv2.waitKey(0)                
+            """
             # Masking the part other than the number plate
             mask = np.zeros(gray.shape,np.uint8)
             new_image = cv2.drawContours(mask,[screenCnt],0,255,-1,)
@@ -110,7 +111,7 @@ def license_reading(video_inp_path: str, frame: str):
             (topx, topy) = (np.min(x), np.min(y))
             (bottomx, bottomy) = (np.max(x), np.max(y))
             Cropped = gray[topx:bottomx+1, topy:bottomy+1]
-
+            
             #Read the number plate
             text = pytesseract.image_to_string(Cropped, config='--psm 11')
             if len(text)>3:
@@ -119,6 +120,7 @@ def license_reading(video_inp_path: str, frame: str):
                 cv2.imshow('Cropped',Cropped)
 
                 cv2.waitKey(0)
+            """
     return
 
 #plate dectection

@@ -17,8 +17,7 @@ def selectCar(frame:str):
 
 
 if __name__ == "__main__":
-    frame = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/plates/platevid2.png'
-    
+    frame = "C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/plates/platevid2.png"
     bb = selectCar(frame)
     (x, y, w, h) = [int(v) for v in bb]
     
