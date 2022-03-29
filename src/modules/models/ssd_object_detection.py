@@ -145,36 +145,50 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
 
                 if CLASSES[idx] == "car":
                     carTracking[carCounter] = trackObject(video_inp_path, video_out_path, int(cap.get(1)), bb, carCounter, False)
+
+                    #add current frame and initial bb
+                    carTracking[carCounter]['boxes'][int(cap.get(1)) - 1] = bb
+
                     #print(carTracking[carCounter])
 
                     activeCars.append(carCounter)
                     print(activeCars)
                     
                     carCounter += 1
-
-                    if debug:
-                        label = "{}: {:.2f}%".format(CLASSES[idx],confidence*100)
-                        y = startY - 15 if startY - 15 > 15 else startY + 15
-
-                        #show frame
-                        cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[idx], 2)
-                        cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
-                        #out.write(frame)
-                        cv2.imshow('frame', frame)
-
-                        #show masked frame
-                        '''cv2.rectangle(maskedFrame, (startX, startY), (endX, endY), COLORS[idx], 2)
-                        cv2.putText(maskedFrame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
-                        cv2.imshow('masked frame', maskedFrame)'''
         
+        if debug:
+            '''label = "{}: {:.2f}%".format(CLASSES[idx],confidence*100)
+            y = startY - 15 if startY - 15 > 15 else startY + 15'''
+
+            # draw rectangles around cars
+            for carId in activeCars:
+                #print("current frame: ", int(cap.get(1)) - 1)
+                #print("carId: ", carId)
+                #print("carTracking: ", carTracking)
+
+                (x, y, w, h) = carTracking[carId]["boxes"][int(cap.get(1)) - 1]
+
+                cv2.rectangle(frame, (x, y), (x+w, y+h), COLORS[idx], 2)
+                cv2.rectangle(maskedFrame, (x, y), (x+w, y+h), COLORS[idx], 2)
+
+            # show frame
+            #cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[idx], 2)
+            #cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+            #out.write(frame)
+            cv2.imshow('frame', frame)
+
+            # show masked frame
+            #cv2.rectangle(maskedFrame, (startX, startY), (endX, endY), COLORS[idx], 2)
+            #cv2.putText(maskedFrame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+            cv2.imshow('masked frame', maskedFrame)
+
+            #print("press <Enter>:")
+            cv2.waitKey(5)
+
         #clear expired cars
         activeCars = clearExpiredObjects(carTracking, activeCars, int(cap.get(1)))
 
         frameCounter += 1
-
-        if debug:
-            print("about to wait for key:")
-            cv2.waitKey(0)
 
     if debug:
         #out.release()
@@ -203,22 +217,13 @@ def clearExpiredObjects(carTracking, activeObjects, nextFrameNumber: int):
 def maskDetectedObjects(frame, frameNumber: int, carTracking, activeCars):
     mask = np.ones(frame.shape[:2], dtype="uint8")
     mask = np.multiply(mask, 255)
-
-    #print(carTracking)
     
     for carId in activeCars:
-        '''currentBox = carTracking[carId]["boxes"][frameNumber]
-        (x, y, w, h) = [int(v) for v in currentBox]'''
         (x, y, w, h) = carTracking[carId]["boxes"][frameNumber]
 
         cv2.rectangle(mask, (x, y), (x+w, y+h), 0, -1)
 
     maskedFrame = cv2.bitwise_and(frame, frame, mask=mask)
-
-    '''cv2.imshow("mask", mask)
-    cv2.imshow("masked frame", maskedFrame)
-    key = cv2.waitKey(0)'''
-    cv2.imshow("masked frame", maskedFrame)
 
     return maskedFrame
 
