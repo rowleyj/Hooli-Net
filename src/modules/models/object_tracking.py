@@ -50,6 +50,8 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
         ret, frame = videoStream.read()
         currentFrameNumber = int(videoStream.get(1)) - 1
 
+        #print("Track Heartbeat: ", currentFrameNumber)
+
         #end of video
         if frame is None:
             trackingData["endFrame"] = currentFrameNumber - 1 #might have to decrease by 1 since last frame was before current
@@ -61,10 +63,10 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
 
         #check if initBB is being used (if an object is being tracked)
         if initBB is not None:
-            '''if currentFrameNumber - trackingData["startFrame"] > 90:
-                print("expired frame")
-                trackingData["endFrame"] = currentFrameNumber
-                break'''
+            if currentFrameNumber - trackingData["startFrame"] > 150:
+                #print("expired frame")
+                trackingData["endFrame"] = currentFrameNumber - 1
+                break
 
             #get new bb corrdinates
             (isSuccessful, box) = tracker.update(frame)
