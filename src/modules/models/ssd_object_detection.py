@@ -2,12 +2,10 @@ import numpy as np
 import cv2
 import sys
 import imutils
-import pytesseract
-from PIL import Image
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\tnaguib\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 #import local_variables
 #from .object_tracking import trackObject
 from object_tracking import trackObject
+import hooli_db
 
 def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
     PROTOTXT = 'C:/Users/tnaguib/Documents/GitHub/Hooli-Net/src/modules/models/MobileNetSSD_deploy.prototxt'
@@ -114,6 +112,7 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
     
     carTracking = {}
     activeCars = []
+    detectedCars = []
 
     while True:
         ret, frame = cap.read()
@@ -144,15 +143,19 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
                 bb = (startX, startY, endX-startX, endY-startY)
 
                 if CLASSES[idx] == "car":
-                    carTracking[carCounter] = trackObject(video_inp_path, video_out_path, int(cap.get(1)), bb, carCounter, False)
+                    if debug:
+                        currentCarId = carCounter
+                    else:
+                        currentCarId = hooli_db.dbCreateVehicle(None)
+                    
+                    #track car and store bounding boxes
+                    carTracking[currentCarId] = trackObject(video_inp_path, video_out_path, int(cap.get(1)), bb, currentCarId, False)
 
                     #add current frame and initial bb
-                    carTracking[carCounter]['boxes'][int(cap.get(1)) - 1] = bb
+                    carTracking[currentCarId]['boxes'][int(cap.get(1)) - 1] = bb
 
-                    #print(carTracking[carCounter])
-
-                    activeCars.append(carCounter)
-                    #print(activeCars)
+                    detectedCars.append(currentCarId)
+                    activeCars.append(currentCarId)
                     
                     carCounter += 1
         
@@ -182,7 +185,6 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
             #cv2.putText(maskedFrame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
             cv2.imshow('masked frame', maskedFrame)
 
-            #print("press <Enter>:")
             cv2.waitKey(5)
 
         #clear expired cars
@@ -190,15 +192,18 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
 
         frameCounter += 1
 
+    status = False
+
     if debug:
         #out.release()
-        pass
+        status = True
+    else:
+        status = writeCarsToDB(video_inp_path, carTracking)
     
-    writeCarsToDB(video_inp_path, carTracking)
     cap.release()
     cv2.destroyAllWindows()
 
-    return True
+    return status, detectedCars
 
 
 # function to remove expired objects from the active objects array
@@ -228,8 +233,21 @@ def maskDetectedObjects(frame, frameNumber: int, carTracking, activeCars):
     return maskedFrame
 
 
-def writeCarsToDB(inputVideo: str, carTracking):
-    pass
+def writeCarsToDB(inputVideo: str, carTracking) -> bool:
+    status = False
+    
+    for carId in carTracking:
+        currentStartFrame = carTracking[carId]["startFrame"]
+        currentEndFrame = carTracking[carId]["endFrame"]
+        currentBoxes = carTracking[carId]["boxes"]
+
+        status = hooli_db.dbCreateBoundingCube(carId, inputVideo, currentStartFrame, currentEndFrame, currentBoxes)
+
+        if not status:
+            return False
+        
+    return True
+
 
 
 if __name__ == "__main__":

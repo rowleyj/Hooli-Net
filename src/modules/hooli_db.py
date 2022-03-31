@@ -10,21 +10,23 @@ import local_variables
 
 
 # function to create new vehicle in db
-def dbCreateVehicle(licensePlate: str, token: str) -> bool:
+def dbCreateVehicle(licensePlate: str) -> bool:
     response = requests.post(
         local_variables.backend_url + '/vehicle',
         data={'licensePlate': licensePlate},
         headers={
-            'Authorization': f'Bearer {token}'
+            'Authorization': f'Bearer {local_variables.auth_token}'
         })
 
     print(response)
 
-    return True
+    # need to isolate vehicle id from response and return it
+
+    return response
 
 
 # function to create new bounding cube in db
-def dbCreateBoundingCube(carId: int, videoPath: str, startFrame: int, endFrame: int, boxes, token: str) -> bool:
+def dbCreateBoundingCube(carId: int, videoPath: str, startFrame: int, endFrame: int, boxes) -> bool:
     response = requests.post(
         local_variables.backend_url + '/boundingCube',
         data={
@@ -35,7 +37,7 @@ def dbCreateBoundingCube(carId: int, videoPath: str, startFrame: int, endFrame: 
             'boxes': boxes
         },
         headers={
-            'Authorization': f'Bearer {token}'
+            'Authorization': f'Bearer {local_variables.auth_token}'
         })
     
     print(response)
@@ -49,5 +51,5 @@ def dbGetBoundingCube(carId: int, token: str):
         local_variables.backend_url + '/boundingCube',
         data={'vehicleId': carId},
         headers={
-            'Authorization': f'Bearer {token}'
+            'Authorization': f'Bearer {local_variables.auth_token}'
         })
