@@ -10,6 +10,13 @@ import imutils
 import numpy as np
 
 
+# constants
+PI_FOCAL_LENGTH = 1049.03
+LICENCE_PLATE_WIDTH = 0.315     # width of license plate should be 30.48cm or 31.5 with trims and covers
+LICENCE_PLATE_HEIGHT = 0.155
+CALIBRATION_DISTANCE = 1
+FRAME_RATE = 30                 # since camera can record at 30 frames/second at 1080p
+
 
 # function to select license plate in an image
 def selectLicensePlate(frame: str):
@@ -38,6 +45,23 @@ def getPixelWidth(frame: str) -> int:
     print("Error reading bb!")
 
 
+# function to find license plate pixel width
+def getPixelHeight(frame: str) -> int:
+    licensePlateBB = selectLicensePlate(frame)
+
+    if licensePlateBB != None:
+        (x, y, w, h) = [int(v) for v in licensePlateBB]
+        '''print(x)
+        print(y)
+        print(w)
+        print(h)
+        print("w:")
+        print(licensePlateBB[2])'''
+        return h
+
+    print("Error reading bb!")
+
+
 # function to get camera's perceived focal length
 def getFocalLength(frame: str, distance: float, width: float) -> float:
     '''
@@ -53,8 +77,6 @@ def getFocalLength(frame: str, distance: float, width: float) -> float:
     return (pixelWidth * distance) / width
 
 
-# width of license plate should be 30.48cm or 31.5 with trims and covers
-
 # function to get estimated plate distance from camera
 def getPlateDistance(frame: str, focalLength: float) -> float:
     '''
@@ -64,15 +86,14 @@ def getPlateDistance(frame: str, focalLength: float) -> float:
         @returns    {float} distance - estimated distance from plate to camera in meters
     '''
 
-    plateWidth = 0.315                  #in meters
-    pixelWidth = getPixelWidth(frame)   #in px
+    pixelHeight = getPixelHeight(frame)   #in px
     
-    return (plateWidth * focalLength) / pixelWidth
+    return (LICENCE_PLATE_HEIGHT * focalLength) / pixelHeight
 
 
 # function to get focal length from calibration with plate 1m away from camera
 def calibrateSystem(frame: str) -> float:
-    return getFocalLength(frame, 1, 0.315)
+    return getFocalLength(frame, CALIBRATION_DISTANCE, LICENCE_PLATE_WIDTH)
 
 
 # function to get instatnaneous relative speed by comparing distance in 2 frames
@@ -84,21 +105,29 @@ def getInstantSpeed(frame1: str, frame2: str, skippedFrames: int, focalLength: f
         @param      {float} focalLength - preceived focal length based on calibration image
 
         @returns    {float} instantSpeedKpH - instantanous relative speed in km/h
-    '''
-
-    frameRate = 30      #since camera can record at 30 frames/second at 1080p
+    ''' 
     
     distance1 = getPlateDistance(frame1, focalLength)
     distance2 = getPlateDistance(frame2, focalLength)
 
-    instantSpeed = (distance1 - distance2) / ((skippedFrames + 1) * (1 / frameRate))
+    instantSpeed = (distance1 - distance2) / ((skippedFrames + 1) * (1 / FRAME_RATE))
     instantSpeedKpH = instantSpeed * 3.6    #to convert speed from m/s to km/h
 
     return instantSpeedKpH
 
 
+# function to process frames and get speeds
+def processFrames():
+    pass
+
+
+# function to warn of oncoming car and possible collision
+def warnUser(threatLevel: int):
+    pass
+
+
 if __name__ == "__main__":
-    iPhoneFocalLength = calibrateSystem('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/iphone_calibrate_1m.jpeg')
+    '''iPhoneFocalLength = calibrateSystem('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/iphone_calibrate_1m.jpeg')
     print("Focal Length:")
     print(iPhoneFocalLength)
 
@@ -112,4 +141,7 @@ if __name__ == "__main__":
 
     testPlateDistance3 = getPlateDistance('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/IMG_0410.jpeg', iPhoneFocalLength) #should be 2m
     print("Test Plate 3 Distance (2.0m expected):")
-    print(testPlateDistance3)
+    print(testPlateDistance3)'''
+
+    piFocalLength = calibrateSystem('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/pi/testpic9.jpg')
+    print("Focal Length: ", piFocalLength)
