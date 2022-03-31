@@ -8,7 +8,8 @@ from flask_restful import Api, Resource, reqparse, abort
 
 # import modules
 from modules import product
-from modules import ml_wrappers
+from modules.models import ssd_object_detection
+import local_variables
 
 
 app = Flask(__name__)
@@ -62,15 +63,19 @@ class Process_Video(Resource):
         input_path = args["input_video_path"]
         output_path = args["output_video_path"]
         token = args["token"]
+
+        # save auth token in local_variables
+        local_variables.auth_token = token
         
-        # start processing video - add all steps later
-        processed = True
-        processed = ml_wrappers.vehicle_detect(input_path, output_path, token)
+        # start processing video
+        status = False #init status
+        status, detectedCars = ssd_object_detection.carDetectTrack(input_path, None, False) #detect all cars in video
+        #detect speed of detected cars
 
         response = {
             "input_video_path":input_path,
             "output_video_path":output_path,
-            "processed":processed
+            "processed":status
         }
 
         return response, 200

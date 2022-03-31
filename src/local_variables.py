@@ -26,3 +26,5 @@ detect_track_video_out_path =   os.path.join(PATH, 'src', 'modules', 'models', '
 plate_image_path = os.path.join(PATH, 'src', 'modules', 'models', 'plates', 'platevid2.png')
 
 backend_url =       'http://0.0.0.0:8080'
+
+auth_token = None
