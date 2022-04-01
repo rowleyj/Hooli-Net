@@ -54,7 +54,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
 
         #end of video
         if frame is None:
-            trackingData["endFrame"] = currentFrameNumber - 1 #might have to decrease by 1 since last frame was before current
+            trackingData["endFrame"] = currentFrameNumber - 1
             break
 
         #resize frame
@@ -64,7 +64,6 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
         #check if initBB is being used (if an object is being tracked)
         if initBB is not None:
             if currentFrameNumber - trackingData["startFrame"] > 150:
-                #print("expired frame")
                 trackingData["endFrame"] = currentFrameNumber - 1
                 break
 
@@ -75,6 +74,8 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
             if isSuccessful:
                 (x, y, w, h) = [round(v) for v in box]
                 trackingData["boxes"][currentFrameNumber] = (x, y, w, h)
+
+                #check if more than 50% of the bounding box is outside the frame
 
                 if debug:
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)

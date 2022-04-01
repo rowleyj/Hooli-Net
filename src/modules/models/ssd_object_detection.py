@@ -131,6 +131,8 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
         maskedFrame = maskDetectedObjects(frame, int(cap.get(1)) - 1, carTracking, activeCars)
         
         h, w = frame.shape[:2]
+        #print("frame width: ", w)
+        #print("frame height: ", h)
         blob = cv2.dnn.blobFromImage(maskedFrame, 0.0035, (260, 260), 46)
         net.setInput(blob)
         detections = net.forward()
