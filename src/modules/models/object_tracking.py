@@ -75,7 +75,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
                 (x, y, w, h) = [round(v) for v in box]
                 trackingData["boxes"][currentFrameNumber] = (x, y, w, h)
 
-                #check if more than 50% of the bounding box is outside the frame
+                #check if more than 20% of the bounding box is outside the frame
 
                 if debug:
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
