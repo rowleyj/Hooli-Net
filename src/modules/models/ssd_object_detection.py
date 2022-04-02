@@ -5,7 +5,7 @@ import imutils
 #import local_variables
 #from .object_tracking import trackObject
 #from modules import hooli_db
-from object_tracking import trackObject
+#from object_tracking import trackObject
 #from .. import hooli_db
 
 def car_detection(INP_VIDEO_PATH, OUT_VIDEO_PATH):
@@ -254,6 +254,12 @@ def writeCarsToDB(inputVideo: str, carTracking) -> bool:
 
 
 if __name__ == "__main__":
-    #INP_VIDEO_PATH = local_variables.video_inp_path
-    #OUT_VIDEO_PATH = local_variables.video_out_path
+    from object_tracking import trackObject
+    import hooli_db
+
     carDetectTrack("", "", True)
+
+else:
+    import local_variables
+    from .object_tracking import trackObject
+    from modules import hooli_db
