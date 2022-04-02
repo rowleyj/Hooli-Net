@@ -8,6 +8,10 @@
 import cv2
 import imutils
 import numpy as np
+#import local_variables
+#from .object_tracking import trackObject
+#from modules import hooli_db
+from object_tracking import trackObject
 
 
 # constants
@@ -15,7 +19,7 @@ PI_FOCAL_LENGTH = 1049.03
 LICENCE_PLATE_WIDTH = 0.315     # width of license plate should be 30.48cm or 31.5 with trims and covers
 LICENCE_PLATE_HEIGHT = 0.155
 CALIBRATION_DISTANCE = 1
-FRAME_RATE = 30                 # since camera can record at 30 frames/second at 1080p
+FRAME_RATE = 60                 # since camera can record at 30 frames/second at 1080p
 
 
 # function to select license plate in an image
@@ -46,20 +50,10 @@ def getPixelWidth(frame: str) -> int:
 
 
 # function to find license plate pixel width
-def getPixelHeight(frame: str) -> int:
-    licensePlateBB = selectLicensePlate(frame)
-
-    if licensePlateBB != None:
-        (x, y, w, h) = [int(v) for v in licensePlateBB]
-        '''print(x)
-        print(y)
-        print(w)
-        print(h)
-        print("w:")
-        print(licensePlateBB[2])'''
-        return h
-
-    print("Error reading bb!")
+def getPixelHeight(frame) -> int:
+    (x, y, w, h) = [int(v) for v in frame]
+    
+    return h
 
 
 # function to get camera's perceived focal length
@@ -78,7 +72,7 @@ def getFocalLength(frame: str, distance: float, width: float) -> float:
 
 
 # function to get estimated plate distance from camera
-def getPlateDistance(frame: str, focalLength: float) -> float:
+def getPlateDistance(frame, focalLength: float) -> float:
     '''
         @param      {str}   frame - path to frame with outlined licence plate
         @param      {float} focalLength - preceived focal length
@@ -97,7 +91,7 @@ def calibrateSystem(frame: str) -> float:
 
 
 # function to get instatnaneous relative speed by comparing distance in 2 frames
-def getInstantSpeed(frame1: str, frame2: str, skippedFrames: int, focalLength: float) -> float:
+def getInstantSpeed(frame1, frame2, skippedFrames: int, focalLength: float) -> float:
     '''
         @param      {str}   frame1 - first frame of the 2 frames that need to be compared, order matters
         @param      {str}   frame2 - second frame of the 2 frames that need to be compared, order matters
@@ -117,13 +111,93 @@ def getInstantSpeed(frame1: str, frame2: str, skippedFrames: int, focalLength: f
 
 
 # function to process frames and get speeds
-def processFrames():
-    pass
+def processFrames(plateTracking):
+    # speed tracking gives instantaneos speed of each frame compared to the previous, so no speed for first frame
+    
+    speedDict = {}
+    startFrame = plateTracking["startFrame"]
+    endFrame = plateTracking["endFrame"]
+    numFrames = endFrame - startFrame
+
+    for i in range(numFrames):
+        frame1 = startFrame - 1 + i
+        frame2 = startFrame + i
+
+        frame1BB = plateTracking["boxes"][frame1]
+        frame2BB = plateTracking["boxes"][frame2]
+
+        speedDict[frame2] = getInstantSpeed(frame1BB, frame2BB, 0, PI_FOCAL_LENGTH)
+    
+    return speedDict
 
 
 # function to warn of oncoming car and possible collision
 def warnUser(threatLevel: int):
     pass
+
+
+# function to debug speed detection
+def debugSpeedDetection(input_video: str):
+    bb = None       #init bounding box coordinates
+
+    videoStream = cv2.VideoCapture(input_video)
+
+    #loop over frames
+    while True:
+        #get frame
+        ret, frame = videoStream.read()
+        currentFrameNumber = int(videoStream.get(1)) - 1
+
+        #end of video
+        if frame is None:
+            break
+
+        (frameHeight, frameWidth) = frame.shape[:2]
+
+        #write speed on frame if bb is not None
+        if bb is not None:
+            #get current frame's bounding box
+            bb = trackedPlate["boxes"][currentFrameNumber]
+            (x, y, w, h) = [round(v) for v in bb]
+
+            #draw bounding box
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+            #add speed to frame as text
+            #print("currentFrameNumber: ", currentFrameNumber)
+            #print("carSpeeds", carSpeeds)
+            #print("trackedPlate: ", trackedPlate)
+            try:
+                carInstantSpeed = carSpeeds[currentFrameNumber]
+                text = f"Speed: {carInstantSpeed}"
+            except:
+                text = "Speed: No speed detected!"
+                bb = None
+            cv2.putText(frame, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+
+        #output the frame
+        cv2.imshow("Frame", frame)
+        key = cv2.waitKey(50) & 0xFF
+
+        #select bb if 's' is clicked or quit if 'q' is clicked
+        if key == ord("s"):
+            #select bb of object to be tracked
+            #press ENTER or SPACE after selecting ROI
+            bb = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+
+            #track plate
+            trackedPlate = trackObject(input_video, None, currentFrameNumber + 1, bb, 0, False)
+            trackedPlate["boxes"][currentFrameNumber] = bb
+
+            #process tracked frames to get speeds
+            carSpeeds = processFrames(trackedPlate)
+
+        
+        elif key == ord("q"):
+            break
+
+    videoStream.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
@@ -141,7 +215,9 @@ if __name__ == "__main__":
 
     testPlateDistance3 = getPlateDistance('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/IMG_0410.jpeg', iPhoneFocalLength) #should be 2m
     print("Test Plate 3 Distance (2.0m expected):")
-    print(testPlateDistance3)'''
+    print(testPlateDistance3)
 
     piFocalLength = calibrateSystem('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/pi/testpic9.jpg')
-    print("Focal Length: ", piFocalLength)
+    print("Focal Length: ", piFocalLength)'''
+
+    debugSpeedDetection('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/car_speed_25_take2.mp4')
