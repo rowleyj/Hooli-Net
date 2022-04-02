@@ -51,7 +51,7 @@ api.add_resource(Product, "/product")
 # Process Video
 processVideoArgs = reqparse.RequestParser()
 processVideoArgs.add_argument("input_video_path", type=str, help="Error - Value 'input_video_path' is required!", required=True)
-processVideoArgs.add_argument("output_video_path", type=str, help="Error - Value 'output_video_path' is required!", required=True)
+processVideoArgs.add_argument("output_video_path", type=str, help="Error - Value 'output_video_path' is required!", required=False)
 processVideoArgs.add_argument("token", type=str, help="Error - Vaule 'token' is required!", required=True)
 
 class Process_Video(Resource):
