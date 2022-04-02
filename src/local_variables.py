@@ -23,6 +23,8 @@ tracking_video_out_path =    os.path.join(PATH, 'src', 'modules', 'models', 'car
 detect_track_video_inp_path =   os.path.join(PATH, 'src', 'modules', 'models', 'hwTest', 'testvid6.mp4')
 detect_track_video_out_path =   os.path.join(PATH, 'src', 'modules', 'models', 'hwTest', 'cars_detect_track.mp4')
 
+final_test_vid_path =   os.path.join(PATH, 'public', 'testvid6.mp4')
+
 plate_image_path = os.path.join(PATH, 'src', 'modules', 'models', 'plates', 'platevid2.png')
 
 backend_url =       'http://0.0.0.0:8080'
