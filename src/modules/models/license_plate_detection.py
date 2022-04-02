@@ -125,17 +125,34 @@ def license_reading(video_inp_path: str, frame: str):
             
     return
 """
+def save(path, image, jpg_quality=None, png_compression=None):
+  '''
+  persist :image: object to disk. if path is given, load() first.
+  jpg_quality: for jpeg only. 0 - 100 (higher means better). Default is 95.
+  png_compression: For png only. 0 - 9 (higher means a smaller size and longer compression time).
+                  Default is 3.
+  '''
+  if jpg_quality:
+    cv2.imwrite(path, image, [int(cv2.IMWRITE_JPEG_QUALITY), jpg_quality])
+  elif png_compression:
+    cv2.imwrite(path, image, [int(cv2.IMWRITE_PNG_COMPRESSION), png_compression])
+  else:
+    cv2.imwrite(path, image)
+    
 #plate dectection
 def license_reading(video_inp_path: str, frame: str):
     regions = ['us-ca']
-    with open(frame, 'rb') as fp:
+    image = cv2.imread(frame)
+    outpath_jpeg = "src/modules/models/plates/frame_Save_JPEG.jpg"
+    save(outpath_jpeg,image,jpg_quality=85)
+    with open(outpath_jpeg, 'rb') as fp:
         response = requests.post(
             'https://api.platerecognizer.com/v1/plate-reader/',
             data=dict(regions=regions),  # Optional
             files=dict(upload=fp),
             headers={'Authorization': 'Token ed18fff6c5778029f96d44347dbee2b1a2499d09'})
     pprint(response.json())
-    return response.json()
+    return
 
 def selectCar(frame:str):
     image = cv2.imread(frame)
