@@ -131,3 +131,7 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
 
 if __name__ == "__main__":
     trackObject(INP_VIDEO_PATH = None, OUT_VIDEO_PATH = None, startFrame = 0, bb = None, vehicleID = 111, debug = True)
+
+else:
+    #import local_variables
+    pass

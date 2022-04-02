@@ -11,8 +11,8 @@ import numpy as np
 #import local_variables
 #from .object_tracking import trackObject
 #from modules import hooli_db
-from object_tracking import trackObject
-from license_plate_detection import license_reading
+#from object_tracking import trackObject
+#from license_plate_detection import license_reading
 
 
 # constants
@@ -220,6 +220,9 @@ def debugSpeedDetection(input_video: str):
 
 
 if __name__ == "__main__":
+    from object_tracking import trackObject
+    from license_plate_detection import license_reading
+
     '''iPhoneFocalLength = calibrateSystem('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/speed/iphone_calibrate_1m.jpeg')
     print("Focal Length:")
     print(iPhoneFocalLength)
@@ -240,3 +243,8 @@ if __name__ == "__main__":
     print("Focal Length: ", piFocalLength)'''
 
     debugSpeedDetection('C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/car_speed_25_take2.mp4')
+
+else:
+    import local_variables
+    from .object_tracking import trackObject
+    from modules import hooli_db
