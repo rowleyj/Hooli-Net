@@ -201,6 +201,7 @@ def debugSpeedDetection(input_video: str):
         if key == ord("s"):
             #select bb of object to be tracked
             #press ENTER or SPACE after selecting ROI
+            #status, bb = detectPlate(frame)
             bb = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
 
             #track plate
