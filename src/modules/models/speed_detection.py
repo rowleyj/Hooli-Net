@@ -12,6 +12,7 @@ import numpy as np
 #from .object_tracking import trackObject
 #from modules import hooli_db
 from object_tracking import trackObject
+from license_plate_detection import license_reading
 
 
 # constants
@@ -129,6 +130,23 @@ def processFrames(plateTracking):
         speedDict[frame2] = getInstantSpeed(frame1BB, frame2BB, 0, PI_FOCAL_LENGTH)
     
     return speedDict
+
+
+# function to use license plate detection api to get plate
+def detectPlate(frame):
+    try:
+        plateData = license_reading(None, frame)
+
+        plateBox = plateData["results"]["box"]
+        x = plateBox["xmin"]
+        y = plateBox["ymin"]
+        w = plateBox["xmax"] - plateBox["xmin"]
+        h = plateBox["ymax"] - plateBox["ymin"]
+        plateBB = (x, y, w, h)
+    except:
+        return False, None
+    
+    return True, plateBB
 
 
 # function to warn of oncoming car and possible collision
