@@ -142,10 +142,10 @@ def save(path, image, jpg_quality=None, png_compression=None):
 #plate dectection
 def license_reading(video_inp_path: str, frame: str):
     regions = ['us-ca']
-    image = cv2.imread(frame)
     outpath_jpeg = "src/modules/models/plates/frame_Save_JPEG.jpg"
+    save(outpath_jpeg, frame, jpg_quality=85)
     cv2.imshow(outpath_jpeg, frame)
-    save(outpath_jpeg,image,jpg_quality=85)
+
     with open(outpath_jpeg, 'rb') as fp:
         response = requests.post(
             'https://api.platerecognizer.com/v1/plate-reader/',

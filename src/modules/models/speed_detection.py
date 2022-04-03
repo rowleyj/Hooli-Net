@@ -134,7 +134,7 @@ def processFrames(plateTracking):
 
 # function to use license plate detection api to get plate
 def detectPlate(frame):
-    '''try:
+    try:
         plateData = license_reading(None, frame)
         print(plateData)
 
@@ -147,8 +147,7 @@ def detectPlate(frame):
     except:
         return False, None
     
-    return True, plateBB'''
-    return license_reading(None, frame)
+    return True, plateBB
 
 
 # function to warn of oncoming car and possible collision
