@@ -144,6 +144,7 @@ def license_reading(video_inp_path: str, frame: str):
     regions = ['us-ca']
     image = cv2.imread(frame)
     outpath_jpeg = "src/modules/models/plates/frame_Save_JPEG.jpg"
+    cv2.imshow(outpath_jpeg, frame)
     save(outpath_jpeg,image,jpg_quality=85)
     with open(outpath_jpeg, 'rb') as fp:
         response = requests.post(

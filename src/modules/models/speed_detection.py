@@ -134,8 +134,9 @@ def processFrames(plateTracking):
 
 # function to use license plate detection api to get plate
 def detectPlate(frame):
-    try:
+    '''try:
         plateData = license_reading(None, frame)
+        print(plateData)
 
         plateBox = plateData["results"]["box"]
         x = plateBox["xmin"]
@@ -146,7 +147,8 @@ def detectPlate(frame):
     except:
         return False, None
     
-    return True, plateBB
+    return True, plateBB'''
+    return license_reading(None, frame)
 
 
 # function to warn of oncoming car and possible collision
@@ -201,16 +203,19 @@ def debugSpeedDetection(input_video: str):
         if key == ord("s"):
             #select bb of object to be tracked
             #press ENTER or SPACE after selecting ROI
-            #status, bb = detectPlate(frame)
-            bb = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+            status, bb = detectPlate(frame)
+            print(bb)
+            #bb = cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
 
-            #track plate
-            trackedPlate = trackObject(input_video, None, currentFrameNumber + 1, bb, 0, False)
-            trackedPlate["boxes"][currentFrameNumber] = bb
+            if status:
+                #track plate
+                trackedPlate = trackObject(input_video, None, currentFrameNumber + 1, bb, 0, False)
+                trackedPlate["boxes"][currentFrameNumber] = bb
 
-            #process tracked frames to get speeds
-            carSpeeds = processFrames(trackedPlate)
-
+                #process tracked frames to get speeds
+                carSpeeds = processFrames(trackedPlate)
+            else:
+                print("error getting plate bounding box")
         
         elif key == ord("q"):
             break
