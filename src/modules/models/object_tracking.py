@@ -63,9 +63,9 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
 
         #check if initBB is being used (if an object is being tracked)
         if initBB is not None:
-            if currentFrameNumber - trackingData["startFrame"] > 150:
+            '''if currentFrameNumber - trackingData["startFrame"] > 150:
                 trackingData["endFrame"] = currentFrameNumber - 1
-                break
+                break'''
 
             #get new bb corrdinates
             (isSuccessful, box) = tracker.update(frame)
@@ -76,6 +76,12 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
                 trackingData["boxes"][currentFrameNumber] = (x, y, w, h)
 
                 #check if more than 20% of the bounding box is outside the frame
+                percentageWidthOffScreen = ((x + w) - frameWidth) / w
+                percentageHeightOffScreen = ((y + h) - frameHeight) / h
+
+                if percentageWidthOffScreen >= 0.2 or percentageHeightOffScreen >= 0.2:
+                    trackingData["endFrame"] = currentFrameNumber - 1
+                    break
 
                 if debug:
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)

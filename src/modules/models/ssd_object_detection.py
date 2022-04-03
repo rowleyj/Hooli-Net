@@ -82,8 +82,8 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
         #video_out_path = local_variables.detect_track_video_out_path
         #PROTOTXT = local_variables.prototext_path
         #MODEL = local_variables.model_path
-        video_inp_path = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/car_speed_40.mp4'
-        video_out_path = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/cars_detect_track.mp4'
+        video_inp_path = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/car_speed_25_take2.mp4'
+        video_out_path = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/hwTest/cars_detect_track25.mp4'
         PROTOTXT = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/MobileNetSSD_deploy.prototxt'
         MODEL = 'C:/Users/Mohamed/OneDrive - McMaster University/Documents/School/University/Fall 2021/Elec Eng 4OI6A/Hooli-Net/src/modules/models/MobileNetSSD_deploy.caffemodel'
     
@@ -105,9 +105,9 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
     carCounter = 0
     
     if debug:
-        #out = cv2.VideoWriter(video_out_path, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'),
-        #                    10, (frame_width, frame_height))
-        pass
+        out = cv2.VideoWriter(video_out_path, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'),
+                            10, (frame_width, frame_height))
+        #pass
     
     sys.path.append("..")
     
@@ -180,7 +180,7 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
             # show frame
             #cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[idx], 2)
             #cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
-            #out.write(frame)
+            out.write(frame)
             cv2.imshow('frame', frame)
 
             # show masked frame
@@ -255,7 +255,7 @@ def writeCarsToDB(inputVideo: str, carTracking) -> bool:
 
 if __name__ == "__main__":
     from object_tracking import trackObject
-    import hooli_db
+    #import hooli_db
 
     carDetectTrack("", "", True)
 
