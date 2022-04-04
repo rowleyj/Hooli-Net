@@ -151,8 +151,15 @@ def detectPlate(frame):
 
 
 # function to warn of oncoming car and possible collision
-def warnUser(threatLevel: int):
-    pass
+def warnUser(speed: float):
+    if speed > 30.0:
+        print("Car Incoming - High Threat")
+    elif speed > 20.0:
+        print("Car Incoming - Medium Threat")
+    elif speed > 10.0:
+        print("Car Incoming - Low Threat")
+    else:
+        print("Car Passing - No Threat")
 
 
 # function to debug speed detection
@@ -189,6 +196,7 @@ def debugSpeedDetection(input_video: str):
             try:
                 carInstantSpeed = carSpeeds[currentFrameNumber]
                 text = f"Speed: {carInstantSpeed}"
+                warnUser(carInstantSpeed)
             except:
                 text = "Speed: No speed detected!"
                 bb = None
