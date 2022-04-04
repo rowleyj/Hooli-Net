@@ -63,9 +63,9 @@ def trackObject(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, startFrame: int, bb, v
 
         #check if initBB is being used (if an object is being tracked)
         if initBB is not None:
-            '''if currentFrameNumber - trackingData["startFrame"] > 150:
+            if currentFrameNumber - trackingData["startFrame"] > 60:
                 trackingData["endFrame"] = currentFrameNumber - 1
-                break'''
+                break
 
             #get new bb corrdinates
             (isSuccessful, box) = tracker.update(frame)
