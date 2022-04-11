@@ -53,3 +53,5 @@ def dbGetBoundingCube(carId: int, token: str):
         headers={
             'Authorization': f'Bearer {local_variables.auth_token}'
         })
+    
+    return response

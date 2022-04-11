@@ -26,6 +26,7 @@ response = requests.get(
     })
 print(response.json())
 
+
 #print(os.getcwd())
 #print(os.path.abspath(os.getcwd()))
 #print(os.path.join(os.getcwd(), 'src', 'modules', 'models', 'cars4.mp4'))
