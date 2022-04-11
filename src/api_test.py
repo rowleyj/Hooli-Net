@@ -18,14 +18,13 @@ response = requests.get(
     )
 print(response.json())
 
-'''response = requests.get(
+response = requests.get(
     BASE + "process_video",
     params={
         "input_video_path":local_variables.video_inp_path,
-        "output_video_path":local_variables.video_out_path,
         "token":'abc123'
     })
-print(response.json())'''
+print(response.json())
 
 #print(os.getcwd())
 #print(os.path.abspath(os.getcwd()))

@@ -60,8 +60,8 @@ class Process_Video(Resource):
 
         args = processVideoArgs.parse_args()
 
-        #input_path = args["input_video_path"]
-        #output_path = args["output_video_path"]
+        input_path = args["input_video_path"]
+        output_path = args["output_video_path"]
         input_path = local_variables.final_test_vid_path
         token = args["token"]
 
@@ -75,7 +75,6 @@ class Process_Video(Resource):
 
         response = {
             "input_video_path":input_path,
-            #"output_video_path":output_path,
             "processed":status
         }
 
