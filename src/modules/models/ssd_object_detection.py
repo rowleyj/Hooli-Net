@@ -149,6 +149,8 @@ def carDetectTrack(INP_VIDEO_PATH: str, OUT_VIDEO_PATH: str, debug: bool):
                     if debug:
                         currentCarId = carCounter
                     else:
+                        #detect license plate and pass it to db
+
                         currentCarId = hooli_db.dbCreateVehicle(None)
                     
                     #track car and store bounding boxes
