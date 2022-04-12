@@ -160,6 +160,31 @@ def warnUser(speed: float):
         print("Car Incoming - Low Threat")
     else:
         print("Car Passing - No Threat")
+    
+
+# function to detect car speed
+def carDetectSpeed(input_video: str, initBB, startFrame: int):
+    bb = initBB
+
+    videoStream = cv2.VideoCapture(input_video)
+    videoStream.set(1, startFrame - 1)
+    ret, frame = videoStream.read()
+
+    status, bb = detectPlate(frame)
+
+    if status:
+        #track plate
+        trackedPlate = trackObject(input_video, None, startFrame, bb, 0, False)
+        trackedPlate["boxes"][startFrame] = bb
+
+        #process tracked frames to get speeds
+        carSpeeds = processFrames(trackedPlate)
+        
+        for speed in carSpeeds:
+            warnUser(speed)
+
+    else:
+        print("error getting license plate bounding box")
 
 
 # function to debug speed detection
